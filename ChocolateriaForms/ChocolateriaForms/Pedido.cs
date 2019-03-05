@@ -13,28 +13,25 @@ namespace ChocolateriaForms
     {
         public static int CrearPedido(int id_pedido,DateTime fecha_pedido,string telefono,string correo, int sucursal, decimal total_pedido, int usuario, int almacen)
         {
-            //string query = @"SELECT id_pedido FROM pedido WHERE id_pedido=@id_pedido";
 
-            //MySqlCommand cmd = new MySqlCommand(query, Conexion.obtenerConexion());
-            //cmd.Parameters.AddWithValue("id_pedido", id_pedido);
-
-            //MySqlDataReader reader = cmd.ExecuteReader();
-            //if (reader.HasRows)
-            //{
-            //    return -1;
-            //}
-
-            string query1 = @"INSERT INTO pedido(fecha_pedido,telefono,correo,sucursal,total_pedido,usuario,almacen)
+            string query = @"INSERT INTO pedido(fecha_pedido,telefono,correo,sucursal,total_pedido,usuario,almacen)
                             VALUES (@fecha_pedido,@telefono,@correo,@sucursal,@total_pedido,@usuario,@almacen)";
+            MySqlCommand cmd = new MySqlCommand(query, Conexion.obtenerConexion());
+            cmd.Parameters.AddWithValue("fecha_pedido", fecha_pedido);
+            cmd.Parameters.AddWithValue("telefono", telefono);
+            cmd.Parameters.AddWithValue("correo", correo);
+            cmd.Parameters.AddWithValue("sucursal", sucursal);
+            cmd.Parameters.AddWithValue("total_pedido", total_pedido);
+            cmd.Parameters.AddWithValue("usuario", usuario);
+            cmd.Parameters.AddWithValue("almacen", almacen);
+            int realizado = cmd.ExecuteNonQuery();
+
+
+            //version 2  el producto,precio_pedido,cantidad deben estar como valores para ingresar?
+            string query1 = @"INSERT INTO pedido_detalle(pedido, producto, precio_pedido, cantidad)
+                              VALUES(@id_pedido,@producto,@precio_pedido,@cantidad)";
+
             MySqlCommand cmd1 = new MySqlCommand(query1, Conexion.obtenerConexion());
-            cmd1.Parameters.AddWithValue("fecha_pedido", fecha_pedido);
-            cmd1.Parameters.AddWithValue("telefono", telefono);
-            cmd1.Parameters.AddWithValue("correo", correo);
-            cmd1.Parameters.AddWithValue("sucursal", sucursal);
-            cmd1.Parameters.AddWithValue("total_pedido", total_pedido);
-            cmd1.Parameters.AddWithValue("usuario", usuario);
-            cmd1.Parameters.AddWithValue("almacen", almacen);
-            int realizado = cmd1.ExecuteNonQuery();
             if(realizado>0)
             {
                 return 1;
@@ -56,6 +53,8 @@ namespace ChocolateriaForms
             {
                 return -1;
             }
+
+
             string query1 = @"UPDATE pedido SET fecha_pedido=@fecha_pedido,telefono=@telefono,correo=@correo,sucursal=@sucursal,total_pedido=@total_pedido,usuario=@usuario,almacen=@almacen WHERE id_pedido=@id_pedido";
             MySqlCommand cmd1 = new MySqlCommand(query1, Conexion.obtenerConexion());
             cmd1.Parameters.AddWithValue("id_pedido", id_pedido);
@@ -67,6 +66,16 @@ namespace ChocolateriaForms
             cmd1.Parameters.AddWithValue("usuario", usuario);
             cmd1.Parameters.AddWithValue("almacen", almacen);
 
+
+            int realizado = cmd1.ExecuteNonQuery();
+            if (realizado > 0)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 }
