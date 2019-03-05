@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Almacen.cs" />
     <Compile Include="Autentificacion.cs" />
     <Compile Include="Categoria.cs" />
     <Compile Include="Conexion.cs" />
