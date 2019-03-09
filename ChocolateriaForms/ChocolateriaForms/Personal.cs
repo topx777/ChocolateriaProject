@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
+using System.Data;
 
 namespace ChocolateriaForms
 {
@@ -120,6 +121,59 @@ namespace ChocolateriaForms
             else
             {
                 return -2;
+            }
+        }
+
+        public static DataTable verListaPersonal()
+        {
+            DataTable Data = new DataTable();
+
+            string query = @"SELECT personal.id,personal.ci,personal.nombre,personal.segundo_nombre,personal.primer_apellido,personal.segundo_apellido,personal.fecha_nacimiento,turno.nombre AS nombre_turno,personal.hora_inicio,personal.hora_fin FROM personal INNER JOIN turno ON personal.turno=turno.id_turno INNER JOIN autentificacion ON personal.autentificacion=autentificacion.id_autentificacion WHERE autentificacion.esAdmin = 0";
+
+            MySqlCommand cmd = new MySqlCommand(query, Conexion.obtenerConexion());
+            MySqlDataAdapter adapter = new MySqlDataAdapter();
+            adapter.Fill(Data);
+
+            return Data;
+        }
+
+        public static string[] verDetallePersonal(int id)
+        {
+            string[] datos = new string[15];
+
+            string query = @"SELECT personal.id,personal.ci,personal.nombre,personal.segundo_nombre,personal.primer_apellido,personal.segundo_apellido,personal.fecha_nacimiento,personal.fecha_registro,turno.nombre AS nombre_turno,personal.hora_inicio,personal.hora_fin,autentificacion.nombre_usuario,autentificacion,codigo,autentificacion.esAdmin FROM personal INNER JOIN turno ON personal.turno=turno.id_turno INNER JOIN autentificacion ON personal.autentificacion=autentificacion.id_autentificacion WHERE personal.id=@id";
+
+            MySqlCommand cmd = new MySqlCommand(query, Conexion.obtenerConexion());
+            cmd.Parameters.AddWithValue("id", id);
+
+            MySqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    datos[0] = reader.GetInt32(0).ToString();   //id
+                    datos[1] = reader.GetString(1);     //ci
+                    datos[2] = reader.GetString(2);     //nombre
+                    datos[3] = reader.GetString(3);     //segundo_nombre
+                    datos[4] = reader.GetString(4);     //primer_apellido
+                    datos[6] = reader.GetString(5);     //segundo_apellido
+                    datos[7] = reader.GetDateTime(6).ToString();    //fecha_nacimiento
+                    datos[8] = reader.GetDateTime(7).ToString();    //fecha_registro
+                    datos[9] = reader.GetString(8);     //nombre_turno
+                    datos[10] = reader.GetDateTime(9).ToString();        //hora_inicio
+                    datos[11] = reader.GetDateTime(10).ToString();        //hora_fin
+                    datos[12] = reader.GetString(11);        //nombre_usuario
+                    datos[13] = reader.GetString(12);        //Codigo
+                    datos[14] = reader.GetBoolean(13).ToString();        //esAdmin
+
+                }
+
+                return datos;
+            }
+            else
+            {
+                return null;
             }
         }
     }
