@@ -27,11 +27,6 @@ namespace ChocolateriaForms
             int realizado = cmd.ExecuteNonQuery();
 
 
-            //version 2  el producto,precio_pedido,cantidad deben estar como valores para ingresar?
-            string query1 = @"INSERT INTO pedido_detalle(pedido, producto, precio_pedido, cantidad)
-                              VALUES(@id_pedido,@producto,@precio_pedido,@cantidad)";
-
-            MySqlCommand cmd1 = new MySqlCommand(query1, Conexion.obtenerConexion());
             if(realizado>0)
             {
                 return 1;
